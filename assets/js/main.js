@@ -7,7 +7,7 @@ let offset = 0;
 
 function convertPokemonToLi(pokemon) {
     return `
-        <li class="pokemon ${pokemon.type}">
+        <li class="pokemon ${pokemon.type}" onclick="openPokemonDetail(${pokemon.number})">
             <span class="number">#${pokemon.number}</span>
             <span class="name">${pokemon.name}</span>
 
@@ -16,8 +16,7 @@ function convertPokemonToLi(pokemon) {
                     ${pokemon.types.map((type) => `<li class="type ${type}">${type}</li>`).join('')}
                 </ol>
 
-                <img src="${pokemon.photo}"
-                     alt="${pokemon.name}">
+                <img src="${pokemon.photo}" alt="${pokemon.name}">
             </div>
         </li>
     `
@@ -45,3 +44,21 @@ loadMoreButton.addEventListener('click', () => {
         loadPokemonItens(offset, limit)
     }
 })
+
+function openPokemonDetail(id) {
+
+    const url = `https://pokeapi.co/api/v2/pokemon/${id}`
+    fetch(url)
+        .then((response) => response.json())
+        .then((poke) => {
+            const detailHtml = `
+                <div class="pokemon-detail-page ${poke.types[0].type.name}">
+                    <button onclick="window.location.reload()">Voltar</button>
+                    <h1>${poke.name}</h1>
+                    <img src="${poke.sprites.other.dream_world.front_default}">
+                    <p>Altura: ${poke.height / 10}m | Peso: ${poke.weight / 10}kg</p>
+                </div>
+            `
+            document.body.innerHTML = detailHtml; 
+        })
+}
